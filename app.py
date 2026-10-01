@@ -88,7 +88,10 @@ def save_image(image, path):
     image = image.squeeze(0)
     image = image.clamp(0, 1)
     image = transforms.ToPILImage()(image)
-    image.save(path)
+    if path.lower().endswith(('.jpg', '.jpeg')):
+        image.save(path, quality=95, subsampling=0)
+    else:
+        image.save(path)
 
 
 

@@ -292,18 +292,10 @@
         }
     }
 
-    /* Scanline Effect */
-    .scanlines {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
-        background-size: 100% 4px;
-        z-index: 9998;
-        pointer-events: none;
-        opacity: 0.6;
+    /* Crisp Image Rendering */
+    .crisp-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
     }
 
     /* Background Canvas */
@@ -473,71 +465,106 @@
         color: white;
     }
 
-    .examples-section {
-        margin-top: 4rem;
+    .result-pipeline-section {
+        margin-top: 3rem;
     }
 
-    .examples-section .example-image {
+    .pipeline-flow {
+        display: flex;
+        align-items: center;
+        gap: 1.75rem;
+        padding: 1.75rem;
+        border-radius: 20px;
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    .pipeline-inputs {
+        flex: 1;
+        display: grid;
+        gap: 1.25rem;
+    }
+
+    .pipeline-item {
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 0.85rem;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pipeline-item:hover {
+        border-color: rgba(129, 140, 248, 0.4);
+    }
+
+    .pipeline-item .item-label {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #94a3b8;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+
+    .pipeline-image {
         width: 100%;
         height: 220px;
         object-fit: contain;
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(15, 23, 42, 0.8);
+        background: #020617;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: block;
     }
 
-    .examples-section .example-role {
-        font-size: 0.82rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #cbd5e1;
-        margin-bottom: 0.45rem;
-        text-transform: uppercase;
-    }
-
-    .examples-section .tree-connector {
-        color: #a5b4fc;
-        font-size: 1.15rem;
-        font-weight: 600;
-        text-align: center;
-        letter-spacing: 0.04em;
-        margin: 0.2rem 0 0.4rem;
-    }
-
-    .examples-section .example-flow {
+    .pipeline-arrow {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
-        padding: 1.25rem;
-        border-radius: 18px;
-        background: rgba(15, 23, 42, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+        border: 1px solid rgba(168, 85, 247, 0.5);
+        color: #c084fc;
+        font-size: 1.5rem;
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
+        flex-shrink: 0;
     }
 
-    .examples-section .example-inputs {
-        flex: 1;
-        display: grid;
-        gap: 1rem;
+    .pipeline-output {
+        flex: 1.25;
     }
 
-    .examples-section .example-output {
-        flex: 1;
+    .pipeline-output .pipeline-item {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.5);
+        box-shadow: 0 0 35px rgba(168, 85, 247, 0.2);
     }
 
-    .examples-section .example-arrow {
-        color: #a5b4fc;
-        font-size: 1.75rem;
-        font-weight: 700;
-        line-height: 1;
+    .pipeline-output .item-label {
+        color: #c084fc;
     }
 
-    @media (max-width: 767.98px) {
-        .examples-section .example-flow {
+    .pipeline-output .pipeline-image {
+        height: 480px;
+        border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+
+    @media (max-width: 991.98px) {
+        .pipeline-flow {
             flex-direction: column;
         }
 
-        .examples-section .example-arrow {
+        .pipeline-arrow {
             transform: rotate(90deg);
+            margin: 0.5rem 0;
+        }
+
+        .pipeline-output .pipeline-image {
+            height: 320px;
         }
     }
 
@@ -578,7 +605,6 @@
 <body>
 
     <canvas id="neuralCanvas"></canvas>
-    <div class="scanlines"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
@@ -624,7 +650,7 @@
                         <div class="card-body text-center">
                             <div class="preview-image mb-3" id="contentPreview">
                                 {% if content_image %}
-                                <img src="{{ url_for('send_image', filename=content_image) }}" alt="Content Image">
+                                <img src="{{ url_for('send_image', filename=content_image) }}" alt="Content Image" class="crisp-image">
                                 {% else %}
                                 <span>Select Content Image</span>
                                 {% endif %}
@@ -641,7 +667,7 @@
                         <div class="card-body text-center">
                             <div class="preview-image mb-3" id="stylePreview">
                                 {% if style_image %}
-                                <img src="{{ url_for('send_image', filename=style_image) }}" alt="Style Image">
+                                <img src="{{ url_for('send_image', filename=style_image) }}" alt="Style Image" class="crisp-image">
                                 {% else %}
                                 <span>Select Style Image</span>
                                 {% endif %}
@@ -673,23 +699,50 @@
         </form>
 
         {% if result_image %}
-        <div class="row justify-content-center mt-5" id="resultSection">
-            <div class="col-md-8">
-                <div class="card border-success">
-                    <div class="card-header bg-success text-white fw-bold text-center py-3"
-                        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Stylized Result</div>
-                    <div class="card-body p-0">
-                        <img src="{{ url_for('send_image', filename=result_image) }}" class="img-fluid w-100"
-                            alt="Stylized Image" style="border-radius: 0 0 20px 20px;">
-                    </div>
-                    <div class="card-footer text-center"
-                        style="background: transparent; border-top: none; padding-bottom: 20px;">
-                        <a href="{{ url_for('send_image', filename=result_image) }}" download
-                            class="btn btn-outline-light mt-2">Download Result</a>
+        <section class="result-pipeline-section fade-in-up mt-5" id="resultSection">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                    <span class="fs-5 fw-bold" style="font-family: 'Orbitron', sans-serif; letter-spacing: 1px;">
+                        <i class="fas fa-magic me-2 text-info"></i>Stylized Output Pipeline
+                    </span>
+                    <span class="badge bg-success px-3 py-2" style="font-family: 'Inter', sans-serif;">
+                        <i class="fas fa-check-circle me-1"></i>Transfer Complete
+                    </span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="pipeline-flow">
+                        <div class="pipeline-inputs">
+                            <div class="pipeline-item">
+                                <div class="item-label text-center"><i class="fas fa-image me-1"></i> Content Image</div>
+                                <img src="{{ url_for('send_image', filename=content_image) }}" alt="Uploaded Content" class="pipeline-image crisp-image">
+                            </div>
+                            <div class="pipeline-item">
+                                <div class="item-label text-center"><i class="fas fa-palette me-1"></i> Style Image</div>
+                                <img src="{{ url_for('send_image', filename=style_image) }}" alt="Uploaded Style" class="pipeline-image crisp-image">
+                            </div>
+                        </div>
+                        <div class="pipeline-arrow">
+                            <i class="fas fa-arrow-right d-none d-lg-inline"></i>
+                            <i class="fas fa-arrow-down d-inline d-lg-none"></i>
+                        </div>
+                        <div class="pipeline-output">
+                            <div class="pipeline-item">
+                                <div class="item-label text-center"><i class="fas fa-sparkles me-1"></i> Stylized Output</div>
+                                <img src="{{ url_for('send_image', filename=result_image) }}" alt="Stylized Output" class="pipeline-image crisp-image">
+                                <div class="text-center mt-3">
+                                    <a href="{{ url_for('send_image', filename=result_image) }}" download="{{ result_image }}" class="btn btn-primary rounded-pill px-4 shadow-lg me-2">
+                                        <i class="fas fa-download me-1"></i> Download Result
+                                    </a>
+                                    <a href="#uploadForm" class="btn btn-outline-light rounded-pill px-3">
+                                        <i class="fas fa-redo me-1"></i> Transfer Another
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         {% endif %}
 
         {% if error %}
@@ -699,62 +752,6 @@
         </div>
         {% endif %}
     </div>
-
-    <section class="container examples-section fade-in-up">
-        <div class="card">
-            <div class="card-header text-center py-3">Examples</div>
-            <div class="card-body">
-                <p class="text-center text-muted mb-4">Each example shows the content image, the style below it, and the
-                    final output beside them.</p>
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="example-flow">
-                            <div class="example-inputs">
-                                <div>
-                                    <div class="example-role text-center">Content Image</div>
-                                    <img src="{{ url_for('send_example', filename='brad_pitt.jpg') }}"
-                                        alt="Brad Pitt Content" class="example-image">
-                                </div>
-                                <div>
-                                    <div class="example-role text-center">Style Image</div>
-                                    <img src="{{ url_for('send_example', filename='sketch.png') }}" alt="Sketch Style"
-                                        class="example-image">
-                                </div>
-                            </div>
-                            <div class="example-arrow">-&gt;</div>
-                            <div class="example-output">
-                                <div class="example-role text-center">Output</div>
-                                <img src="{{ url_for('send_example', filename='stylized_brad_pitt.jpg') }}"
-                                    alt="Brad Pitt Sketch Result" class="example-image">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="example-flow">
-                            <div class="example-inputs">
-                                <div>
-                                    <div class="example-role text-center">Content Image</div>
-                                    <img src="{{ url_for('send_example', filename='brad_pitt.jpg') }}"
-                                        alt="Brad Pitt Content" class="example-image">
-                                </div>
-                                <div>
-                                    <div class="example-role text-center">Style Image</div>
-                                    <img src="{{ url_for('send_example', filename='picasso_seated_nude_hr.jpg') }}"
-                                        alt="Picasso Seated Nude Style" class="example-image">
-                                </div>
-                            </div>
-                            <div class="example-arrow">-&gt;</div>
-                            <div class="example-output">
-                                <div class="example-role text-center">Output</div>
-                                <img src="{{ url_for('send_example', filename='stylized_brad_pitt (1).jpg') }}"
-                                    alt="Brad Pitt Picasso Result" class="example-image">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section class="container faq-section fade-in-up">
         <div class="card">
@@ -919,7 +916,7 @@
 
             reader.addEventListener("load", function () {
                 // Convert image file to base64 string
-                preview.innerHTML = `<img src="${reader.result}" alt="Image Preview">`;
+                preview.innerHTML = `<img src="${reader.result}" alt="Image Preview" class="crisp-image">`;
             }, false);
 
             if (file) {
@@ -929,6 +926,16 @@
 
         // Restore previews if page reloads with data (optional enhancement)
         window.onload = function () {
+            const form = document.getElementById('uploadForm');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    const loader = document.getElementById('loader');
+                    if (loader) {
+                        loader.classList.add('active');
+                    }
+                });
+            }
+
             if (document.getElementById('resultSection')) {
                 document.getElementById('resultSection').scrollIntoView({ behavior: "smooth" });
             }
