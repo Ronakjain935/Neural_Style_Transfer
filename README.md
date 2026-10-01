@@ -64,8 +64,8 @@ NST_PROJECT/
 Ensure you have Python 3.10+ installed. Clone or navigate to the repository directory:
 
 ```bash
-git clone <repository-url>
-cd NST_PROJECT
+git clone https://github.com/Ronakjain935/Neural_Style_Transfer.git
+cd Neural_Style_Transfer
 ```
 
 Install the dependencies:
