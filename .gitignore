@@ -37,7 +37,12 @@ venv.bak/
 # PyTorch / ML checkpoints & large weights
 *.pt
 *.pth
-experiment/
+!vgg_normalised.pth
+!experiment/trial/decoder_5.pth
+experiment/*
+!experiment/trial/
+experiment/trial/*
+!experiment/trial/decoder_5.pth
 experiments/
 
 # Datasets and archives
