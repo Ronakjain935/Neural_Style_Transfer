@@ -1,0 +1,9 @@
+torch
+torchvision
+Pillow
+tqdm
+Flask
+Flask-WTF
+Flask-Bootstrap
+WTForms
+Werkzeug
